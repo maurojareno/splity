@@ -61,3 +61,4 @@ SEED_STATISTICS.md
 # Agents
 .worktrees/
 docs/superpowers/
+.claude/settings.local.json
