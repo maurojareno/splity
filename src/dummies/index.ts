@@ -7,6 +7,7 @@ import {
 } from './expenseGenerator';
 import { generateUsers } from './userGenerator';
 import { generateGroups } from './groupGenerator';
+import { generateBudgets } from './budgetGenerator';
 import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { argv } from 'node:process';
@@ -24,6 +25,7 @@ const dummyExpenses = generateAllExpenses(dummyUsers, dummyGroups);
 const dummyExpenseEdits = generateExpenseEdits(dummyExpenses);
 const dummyExpensesToDelete = generateExpensesToDelete(dummyExpenses);
 const dummyBalancesToSettle = generatePairsToSettle(dummyExpenses, dummyExpensesToDelete);
+const dummyBudgets = generateBudgets(dummyGroups);
 
 export const dummyData = {
   users: dummyUsers,
@@ -32,6 +34,7 @@ export const dummyData = {
   expenseEdits: dummyExpenseEdits,
   expensesToDelete: dummyExpensesToDelete,
   balancesToSettle: dummyBalancesToSettle,
+  budgets: dummyBudgets,
   seed: SEED,
 };
 
@@ -41,7 +44,7 @@ const dataToHash = JSON.stringify(dummyData);
 const hash = createHash('sha256').update(dataToHash).digest('hex');
 
 const savedHash = await readFile('./prisma/seed-checksum.txt', 'utf-8').catch(() => null);
-// await writeFile('./prisma/seed-checksum.txt', hash);
+// Await writeFile('./prisma/seed-checksum.txt', hash);
 
 if (savedHash && savedHash.trim() !== hash) {
   const msg = `Generated data checksum does not match saved checksum! This may indicate non-deterministic data generation.

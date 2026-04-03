@@ -240,6 +240,49 @@
     "no_transactions_yet": "No transactions yet",
     "already_added": "Already added"
   },
+  "budget": {
+    "title": "Budget",
+    "create_budget": "Create budget",
+    "edit_budget": "Edit budget",
+    "new_budget": "New budget",
+    "budget_name": "Budget name",
+    "budget_name_placeholder": "e.g. March 2026 Budget",
+    "total_amount": "Total amount",
+    "period_start": "Start date",
+    "period_end": "End date",
+    "this_month": "This month",
+    "envelopes": "Envelopes",
+    "envelope": "Envelope",
+    "add_envelope": "Add envelope",
+    "envelope_name_placeholder": "e.g. Rent, Groceries, Pets...",
+    "allocated_amount": "Allocated amount",
+    "of": "of",
+    "remaining": "Remaining",
+    "remaining_short": "left",
+    "unallocated": "Unallocated",
+    "spent": "Spent",
+    "allocated": "Allocated",
+    "daily_average": "Daily average",
+    "projected_total": "Projected total",
+    "add_charge": "Add charge",
+    "add_charge_to": "Add charge to",
+    "quick_add_charge": "Quick add charge",
+    "charge_description_placeholder": "What was this charge for?",
+    "charge_added": "Charge added",
+    "charge_deleted": "Charge deleted",
+    "charge_history": "Charge history",
+    "no_charges_yet": "No charges yet",
+    "view_expense": "View linked expense",
+    "delete_charge_title": "Delete charge",
+    "delete_charge_description": "This action cannot be undone. This will permanently delete this charge.",
+    "budget_created": "Budget created",
+    "budget_updated": "Budget updated",
+    "no_envelope": "No envelope",
+    "empty_state": {
+      "title": "No budget yet",
+      "description": "Create a budget to track spending with envelopes. Allocate amounts to categories and see how your group spending compares."
+    }
+  },
   "group_details": {
     "add_members": "Add members",
     "copied": "Copied",
@@ -308,6 +351,7 @@
     },
     "tabs": {
       "balances": "Balances",
+      "budget": "Budget",
       "expenses": "Expenses"
     },
     "title": "Group outstanding balances"

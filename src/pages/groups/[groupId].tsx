@@ -7,6 +7,7 @@ import {
   DoorOpen,
   Info,
   Merge,
+  PiggyBank,
   PlusIcon,
   Share,
   Trash2,
@@ -83,7 +84,7 @@ const BalancePage: NextPageWithUser<{
   }, [groupDetailQuery.data, t]);
 
   const isAdmin = groupDetailQuery.data?.userId === user.id;
-  const isArchived = !!groupDetailQuery.data?.archivedAt;
+  const isArchived = Boolean(groupDetailQuery.data?.archivedAt);
   const canDeleteOrArchive =
     groupDetailQuery.data?.userId === user.id &&
     !groupDetailQuery.data?.groupBalances.find((bal) => 0n !== bal.amount);
@@ -435,9 +436,15 @@ const BalancePage: NextPageWithUser<{
               </Button>
             </div>
             <Tabs defaultValue="expenses">
-              <TabsList className="mx-auto grid w-full max-w-96 grid-cols-2">
+              <TabsList className="mx-auto grid w-full max-w-96 grid-cols-3">
                 <TabsTrigger value="expenses">{t('group_details.tabs.expenses')}</TabsTrigger>
                 <TabsTrigger value="balances">{t('group_details.tabs.balances')}</TabsTrigger>
+                <TabsTrigger value="budget" asChild>
+                  <Link href={`/groups/${groupId}/budget`} className="flex items-center gap-1">
+                    <PiggyBank className="h-3.5 w-3.5" />
+                    {t('group_details.tabs.budget')}
+                  </Link>
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="expenses">
                 <ExpenseList

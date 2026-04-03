@@ -2,11 +2,12 @@ import { HeartHandshakeIcon, Landmark, RefreshCcwDot, X } from 'lucide-react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { type CurrencyCode } from '~/lib/currency';
 import { useAddExpenseStore } from '~/store/addStore';
 import { api } from '~/utils/api';
+import { EnvelopeSelector } from '~/components/Budget/EnvelopeSelector';
 
 import { toast } from 'sonner';
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
@@ -71,7 +72,10 @@ export const AddOrEditExpensePage: React.FC<{
     setSingleTransaction,
   } = useAddExpenseStore((s) => s.actions);
 
+  const [selectedEnvelopeId, setSelectedEnvelopeId] = useState<string | null>(null);
+
   const addExpenseMutation = api.expense.addOrEditExpense.useMutation();
+  const envelopeChargeMutation = api.envelope.charge.useMutation();
   const updateProfile = api.user.updateUserDetail.useMutation();
 
   const onCurrencyPick = useCallback(
@@ -137,8 +141,25 @@ export const AddOrEditExpensePage: React.FC<{
           },
         ],
         {
-          onSuccess: (d) => {
+          onSuccess: async (d) => {
             if (d) {
+              // Create envelope charge if an envelope is selected
+              const newExpenseId = d.length > 0 ? d[0]?.id : expenseId;
+              if (selectedEnvelopeId && newExpenseId && amount > 0n) {
+                try {
+                  await envelopeChargeMutation.mutateAsync({
+                    envelopeId: selectedEnvelopeId,
+                    amount: amount * (isNegative ? -1n : 1n),
+                    description,
+                    expenseId: newExpenseId,
+                  });
+                } catch (e) {
+                  // Don't block navigation if charge fails
+                  console.error('Failed to create envelope charge:', e);
+                }
+                setSelectedEnvelopeId(null);
+              }
+
               if (multipleTransactions.length > 0) {
                 const allTransactions = [...multipleTransactions];
                 const transactionToAdd = allTransactions.pop();
@@ -148,7 +169,7 @@ export const AddOrEditExpensePage: React.FC<{
                 }
                 return;
               } else {
-                const id = d.length > 0 ? d[0]?.id : expenseId;
+                const id = newExpenseId;
 
                 let navPromise: () => Promise<any> = () => Promise.resolve(true);
 
@@ -195,6 +216,8 @@ export const AddOrEditExpensePage: React.FC<{
     router,
     resetState,
     addExpenseMutation,
+    envelopeChargeMutation,
+    selectedEnvelopeId,
     group,
     paidBy,
     splitType,
@@ -318,6 +341,13 @@ export const AddOrEditExpensePage: React.FC<{
               rightIcon={currencyConversionComponent}
             />
           </div>
+          {group && (
+            <EnvelopeSelector
+              groupId={group.id}
+              selectedEnvelopeId={selectedEnvelopeId}
+              onSelect={setSelectedEnvelopeId}
+            />
+          )}
           <div className="h-[180px]">
             {amount && '' !== description ? (
               <>

@@ -240,6 +240,49 @@
     "title": "Añadir gasto",
     "title_mobile": "Añadir"
   },
+  "budget": {
+    "title": "Presupuesto",
+    "create_budget": "Crear presupuesto",
+    "edit_budget": "Editar presupuesto",
+    "new_budget": "Nuevo presupuesto",
+    "budget_name": "Nombre del presupuesto",
+    "budget_name_placeholder": "ej: Presupuesto Marzo 2026",
+    "total_amount": "Monto total",
+    "period_start": "Fecha inicio",
+    "period_end": "Fecha fin",
+    "this_month": "Este mes",
+    "envelopes": "Huchas",
+    "envelope": "Hucha",
+    "add_envelope": "Agregar hucha",
+    "envelope_name_placeholder": "ej: Alquiler, Comida, Mascotas...",
+    "allocated_amount": "Monto asignado",
+    "of": "de",
+    "remaining": "Restante",
+    "remaining_short": "rest.",
+    "unallocated": "Sin asignar",
+    "spent": "Gastado",
+    "allocated": "Asignado",
+    "daily_average": "Promedio diario",
+    "projected_total": "Total proyectado",
+    "add_charge": "Agregar gasto",
+    "add_charge_to": "Agregar gasto a",
+    "quick_add_charge": "Agregar gasto rápido",
+    "charge_description_placeholder": "¿En qué se gastó?",
+    "charge_added": "Gasto agregado",
+    "charge_deleted": "Gasto eliminado",
+    "charge_history": "Historial de gastos",
+    "no_charges_yet": "Sin gastos aún",
+    "view_expense": "Ver gasto vinculado",
+    "delete_charge_title": "Eliminar gasto",
+    "delete_charge_description": "Esta acción no se puede deshacer. Se eliminará permanentemente este gasto de la hucha.",
+    "budget_created": "Presupuesto creado",
+    "budget_updated": "Presupuesto actualizado",
+    "no_envelope": "Sin hucha",
+    "empty_state": {
+      "title": "Sin presupuesto aún",
+      "description": "Creá un presupuesto para controlar los gastos con huchas. Asigná montos a categorías y mirá cómo gasta tu grupo."
+    }
+  },
   "group_details": {
     "add_members": "Añadir miembros",
     "copied": "Copiado",
@@ -308,6 +351,7 @@
     },
     "tabs": {
       "balances": "Saldos",
+      "budget": "Presupuesto",
       "expenses": "Gastos"
     },
     "title": "Saldos pendientes del grupo"

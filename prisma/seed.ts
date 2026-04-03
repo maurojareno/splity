@@ -111,6 +111,42 @@ async function deleteExpenses() {
   return prisma.expense.findMany({ include: { expenseParticipants: true } });
 }
 
+async function createBudgets() {
+  for (const budget of dummyData.budgets) {
+    await prisma.budget.create({
+      data: {
+        groupId: budget.groupId,
+        name: budget.name,
+        totalAmount: budget.totalAmount,
+        currency: budget.currency,
+        periodStart: budget.periodStart,
+        periodEnd: budget.periodEnd,
+        isActive: budget.isActive,
+        createdBy: budget.createdBy,
+        envelopes: {
+          create: budget.envelopes.map((env) => ({
+            name: env.name,
+            allocatedAmount: env.allocatedAmount,
+            icon: env.icon,
+            color: env.color,
+            sortOrder: env.sortOrder,
+            charges: {
+              create: env.charges.map((charge) => ({
+                amount: charge.amount,
+                description: charge.description,
+                date: charge.date,
+                createdBy: charge.createdBy,
+              })),
+            },
+          })),
+        },
+      },
+    });
+  }
+
+  console.log(`Finished creating ${dummyData.budgets.length} budgets with envelopes`);
+}
+
 async function main() {
   // await prisma.user.deleteMany();
   // await prisma.expense.deleteMany();
@@ -124,6 +160,7 @@ async function main() {
   await editExpenses();
   await deleteExpenses();
   await settleBalances(prisma, dummyData.balancesToSettle);
+  await createBudgets();
 }
 
 main()

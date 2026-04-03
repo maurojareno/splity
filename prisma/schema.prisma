@@ -62,6 +62,8 @@ model User {
   associatedGroups    GroupUser[]
   sessions            Session[]
   hiddenFriendIds     Int[]                @default([])
+  createdBudgets      Budget[]             @relation("BudgetCreator")
+  envelopeCharges     EnvelopeCharge[]     @relation("EnvelopeChargeCreator")
 
   @@schema("public")
 }
@@ -106,6 +108,7 @@ model Group {
   createdBy        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   groupUsers       GroupUser[]
   groupBalances    BalanceView[]
+  budgets          Budget[]
 
   @@schema("public")
 }
@@ -298,6 +301,67 @@ view BalanceView {
   friend User   @relation("FriendBalanceView", fields: [friendId], references: [id], onDelete: Cascade)
   group  Group? @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
+  @@schema("public")
+}
+
+// A monthly budget associated with a group
+model Budget {
+  id          String   @id @default(cuid())
+  groupId     Int
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  name        String
+  totalAmount BigInt
+  currency    String   @default("EUR")
+  periodStart DateTime
+  periodEnd   DateTime
+  isActive    Boolean  @default(true)
+  createdBy   Int
+  creator     User     @relation("BudgetCreator", fields: [createdBy], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  envelopes Envelope[]
+
+  @@index([groupId])
+  @@index([groupId, isActive])
+  @@schema("public")
+}
+
+// An envelope/hucha within a budget
+model Envelope {
+  id              String   @id @default(cuid())
+  budgetId        String
+  budget          Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  name            String
+  allocatedAmount BigInt
+  color           String?
+  icon            String?
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  charges EnvelopeCharge[]
+
+  @@index([budgetId])
+  @@schema("public")
+}
+
+// A charge against an envelope (optionally linked to a split expense)
+model EnvelopeCharge {
+  id          String   @id @default(cuid())
+  envelopeId  String
+  envelope    Envelope @relation(fields: [envelopeId], references: [id], onDelete: Cascade)
+  amount      BigInt
+  description String
+  date        DateTime @default(now())
+  createdBy   Int
+  creator     User     @relation("EnvelopeChargeCreator", fields: [createdBy], references: [id])
+  expenseId   String?  @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([envelopeId])
+  @@index([envelopeId, date])
   @@schema("public")
 }
 

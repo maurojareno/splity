@@ -3,6 +3,8 @@ import { createTRPCRouter } from '~/server/api/trpc';
 
 import { userRouter } from './routers/user';
 import { bankTransactionsRouter } from './routers/bankTransactions';
+import { budgetRouter } from './routers/budget';
+import { envelopeRouter } from './routers/envelope';
 import { expenseRouter } from './routers/expense';
 
 /**
@@ -14,8 +16,10 @@ export const appRouter = createTRPCRouter({
   group: groupRouter,
   user: userRouter,
   bankTransactions: bankTransactionsRouter,
+  budget: budgetRouter,
+  envelope: envelopeRouter,
   expense: expenseRouter,
 });
 
-// export type definition of API
+// Export type definition of API
 export type AppRouter = typeof appRouter;
