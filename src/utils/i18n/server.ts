@@ -6,7 +6,9 @@ export const customServerSideTranslations = async (
   locale: string | undefined,
   namespaces: string[],
 ): Promise<SSRConfig> => {
-  locale ??= 'en';
+  if (!locale || locale === 'default') {
+    locale = 'en';
+  }
   return await serverSideTranslations(locale, namespaces, i18nConfig);
 };
 

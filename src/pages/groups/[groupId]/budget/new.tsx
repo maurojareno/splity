@@ -4,10 +4,12 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react';
 import { toast } from 'sonner';
+import { CurrencyPicker } from '~/components/AddExpense/CurrencyPicker';
 import MainLayout from '~/components/Layout/MainLayout';
 import { Button } from '~/components/ui/button';
 import { CurrencyInput } from '~/components/ui/currency-input';
 import { Input } from '~/components/ui/input';
+import { type CurrencyCode } from '~/lib/currency';
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
 import { type NextPageWithUser } from '~/types';
 import { api } from '~/utils/api';
@@ -45,12 +47,12 @@ const NewBudgetPage: NextPageWithUser = () => {
   const updateBudgetMutation = api.budget.update.useMutation();
 
   const defaultCurrency = groupDetailQuery.data?.defaultCurrency ?? 'EUR';
-  const currencyHelpers = getCurrencyHelpersCached(defaultCurrency);
 
   const [name, setName] = useState('');
   const [totalAmountStr, setTotalAmountStr] = useState('');
   const [totalAmount, setTotalAmount] = useState(0n);
   const [currency, setCurrency] = useState(defaultCurrency);
+  const currencyHelpers = getCurrencyHelpersCached(currency);
   const [periodStart, setPeriodStart] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]!;
@@ -205,19 +207,25 @@ const NewBudgetPage: NextPageWithUser = () => {
 
           <div>
             <label className="mb-1 block text-sm text-gray-400">{t('budget.total_amount')}</label>
-            <CurrencyInput
-              placeholder={t('expense_details.add_expense_details.amount_placeholder')}
-              currency={currency}
-              strValue={totalAmountStr}
-              onValueChange={({ strValue, bigIntValue }) => {
-                if (strValue !== undefined) {
-                  setTotalAmountStr(strValue);
-                }
-                if (bigIntValue !== undefined) {
-                  setTotalAmount(bigIntValue);
-                }
-              }}
-            />
+            <div className="flex gap-2">
+              <CurrencyPicker
+                currentCurrency={currency as CurrencyCode}
+                onCurrencyPick={(c) => setCurrency(c)}
+              />
+              <CurrencyInput
+                placeholder={t('expense_details.add_expense_details.amount_placeholder')}
+                currency={currency}
+                strValue={totalAmountStr}
+                onValueChange={({ strValue, bigIntValue }) => {
+                  if (strValue !== undefined) {
+                    setTotalAmountStr(strValue);
+                  }
+                  if (bigIntValue !== undefined) {
+                    setTotalAmount(bigIntValue);
+                  }
+                }}
+              />
+            </div>
           </div>
 
           <div className="flex gap-2">
