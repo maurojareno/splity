@@ -270,59 +270,57 @@ export const settleBalances = async (
       return true;
     });
 
-    await Promise.all(
-      relevantBalances.map(async (balance) => {
-        const candidateKind = null === balance.groupId ? 'direct' : 'group';
-        const key = toCandidateKey(
-          balance.userId,
-          balance.friendId,
-          balance.groupId,
-          balance.currency,
-          candidateKind,
-        );
+    for (const balance of relevantBalances) {
+      const candidateKind = null === balance.groupId ? 'direct' : 'group';
+      const key = toCandidateKey(
+        balance.userId,
+        balance.friendId,
+        balance.groupId,
+        balance.currency,
+        candidateKind,
+      );
 
-        const candidate = candidateMap.get(key);
-        if (!candidate || 0n === balance.amount) {
-          return;
-        }
+      const candidate = candidateMap.get(key);
+      if (!candidate || 0n === balance.amount) {
+        continue;
+      }
 
-        const sender = 0n > balance.amount ? candidate.friendId : candidate.userId;
-        const receiver = 0n > balance.amount ? candidate.userId : candidate.friendId;
+      const sender = 0n > balance.amount ? candidate.friendId : candidate.userId;
+      const receiver = 0n > balance.amount ? candidate.userId : candidate.friendId;
 
-        const settlementExpense = await createExpense(
-          {
-            name: 'Settle up',
-            amount: BigMath.abs(balance.amount),
-            currency: balance.currency,
-            splitType: SplitType.SETTLEMENT,
-            groupId: balance.groupId,
-            participants: [
-              {
-                userId: sender,
-                amount: balance.amount,
-              },
-              {
-                userId: receiver,
-                amount: -balance.amount,
-              },
-            ],
-            paidBy: sender,
-            category: DEFAULT_CATEGORY,
-            expenseDate: event.at,
-          },
-          sender,
-        );
+      const settlementExpense = await createExpense(
+        {
+          name: 'Settle up',
+          amount: BigMath.abs(balance.amount),
+          currency: balance.currency,
+          splitType: SplitType.SETTLEMENT,
+          groupId: balance.groupId,
+          participants: [
+            {
+              userId: sender,
+              amount: balance.amount,
+            },
+            {
+              userId: receiver,
+              amount: -balance.amount,
+            },
+          ],
+          paidBy: sender,
+          category: DEFAULT_CATEGORY,
+          expenseDate: event.at,
+        },
+        sender,
+      );
 
-        await prisma.expense.update({
-          where: {
-            id: settlementExpense.id,
-          },
-          data: {
-            createdAt: event.at,
-          },
-        });
-      }),
-    );
+      await prisma.expense.update({
+        where: {
+          id: settlementExpense.id,
+        },
+        data: {
+          createdAt: event.at,
+        },
+      });
+    }
   }, Promise.resolve());
 
   console.log('Finished settling balances');

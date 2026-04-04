@@ -269,6 +269,7 @@
     "quick_add_charge": "Quick add charge",
     "charge_description_placeholder": "What was this charge for?",
     "charge_added": "Charge added",
+    "charge_to_envelope": "Charge to envelope",
     "charge_deleted": "Charge deleted",
     "charge_history": "Charge history",
     "no_charges_yet": "No charges yet",

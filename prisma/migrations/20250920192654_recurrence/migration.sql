@@ -49,25 +49,45 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DO $$
-BEGIN
-IF current_database() NOT LIKE 'prisma_migrate_shadow_db%' THEN
-  CREATE EXTENSION IF NOT EXISTS pg_cron;
-ELSE
-    CREATE SCHEMA IF NOT EXISTS cron;
-    CREATE TABLE IF NOT EXISTS cron.job (
-        jobid BIGINT PRIMARY KEY,
-        schedule TEXT,
-        command TEXT,
-        nodename TEXT,
-        nodeport INTEGER,
-        database TEXT,
-        username TEXT,
-        active BOOLEAN,
-        jobname TEXT
-    );
-END IF;
-END $$;
+-- DO $$
+-- BEGIN
+-- IF current_database() NOT LIKE 'prisma_migrate_shadow_db%' THEN
+--   CREATE EXTENSION IF NOT EXISTS pg_cron;
+-- ELSE
+--     CREATE SCHEMA IF NOT EXISTS cron;
+--     CREATE TABLE IF NOT EXISTS cron.job (
+--         jobid BIGINT PRIMARY KEY,
+--         schedule TEXT,
+--         command TEXT,
+--         nodename TEXT,
+--         nodeport INTEGER,
+--         database TEXT,
+--         username TEXT,
+--         active BOOLEAN,
+--         jobname TEXT
+--     );
+-- END IF;
+-- END $$;
+
+ DO $$
+ BEGIN
+   BEGIN
+     CREATE EXTENSION IF NOT EXISTS pg_cron;
+   EXCEPTION WHEN OTHERS THEN
+     CREATE SCHEMA IF NOT EXISTS cron;
+     CREATE TABLE IF NOT EXISTS cron.job (
+         jobid BIGINT PRIMARY KEY,
+         schedule TEXT,
+         command TEXT,
+         nodename TEXT,
+         nodeport INTEGER,
+         database TEXT,
+         username TEXT,
+         active BOOLEAN,
+         jobname TEXT
+     );
+   END;
+ END $$;
 
 -- AddForeignKey
 ALTER TABLE "public"."ExpenseRecurrence" ADD CONSTRAINT "ExpenseRecurrence_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "cron"."job"("jobid") ON DELETE CASCADE ON UPDATE CASCADE;

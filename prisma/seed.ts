@@ -19,20 +19,18 @@ async function createUsers() {
 }
 
 async function createGroups() {
-  await Promise.all(
-    dummyData.groups.map(({ members, type, ...group }) =>
-      prisma.group.create({
-        data: {
-          ...group,
-          groupUsers: {
-            create: members.map((member) => ({
-              userId: member.id,
-            })),
-          },
+  for (const { members, type, ...group } of dummyData.groups) {
+    await prisma.group.create({
+      data: {
+        ...group,
+        groupUsers: {
+          create: members.map((member) => ({
+            userId: member.id,
+          })),
         },
-      }),
-    ),
-  );
+      },
+    });
+  }
 
   console.log('Finished creating groups');
 
@@ -42,32 +40,30 @@ async function createGroups() {
 const idLookup: Map<number, string> = new Map();
 
 async function createExpenses() {
-  await Promise.all(
-    dummyData.expenses.map(async (expense, idx) => {
-      const res = await createExpense(
-        {
-          ...expense,
-          paidBy: expense.paidBy.id,
-          participants: calculateParticipantSplit(expense as any).participants.map((p) => ({
-            userId: p.id,
-            amount: p.amount ?? 0n,
-          })),
-        },
-        expense.addedBy,
-      );
+  for (const [idx, expense] of dummyData.expenses.entries()) {
+    const res = await createExpense(
+      {
+        ...expense,
+        paidBy: expense.paidBy.id,
+        participants: calculateParticipantSplit(expense as any).participants.map((p) => ({
+          userId: p.id,
+          amount: p.amount ?? 0n,
+        })),
+      },
+      expense.addedBy,
+    );
 
-      await prisma.expense.update({
-        where: {
-          id: res!.id,
-        },
-        data: {
-          createdAt: expense.createdAt,
-        },
-      });
+    await prisma.expense.update({
+      where: {
+        id: res!.id,
+      },
+      data: {
+        createdAt: expense.createdAt,
+      },
+    });
 
-      idLookup.set(idx, res!.id);
-    }),
-  );
+    idLookup.set(idx, res!.id);
+  }
 
   console.log('Finished creating expenses');
 
@@ -75,23 +71,21 @@ async function createExpenses() {
 }
 
 async function editExpenses() {
-  await Promise.all(
-    dummyData.expenseEdits.map(async ({ idx, ...expense }) => {
-      assert(idLookup.get(idx), `No expense ID found for index ${idx}`);
-      await editExpense(
-        {
-          ...expense,
-          expenseId: idLookup.get(idx),
-          paidBy: expense.paidBy.id,
-          participants: calculateParticipantSplit(expense as any).participants.map((p) => ({
-            userId: p.id,
-            amount: p.amount ?? 0n,
-          })),
-        },
-        expense.updatedBy.id,
-      );
-    }),
-  );
+  for (const { idx, ...expense } of dummyData.expenseEdits) {
+    assert(idLookup.get(idx), `No expense ID found for index ${idx}`);
+    await editExpense(
+      {
+        ...expense,
+        expenseId: idLookup.get(idx),
+        paidBy: expense.paidBy.id,
+        participants: calculateParticipantSplit(expense as any).participants.map((p) => ({
+          userId: p.id,
+          amount: p.amount ?? 0n,
+        })),
+      },
+      expense.updatedBy.id,
+    );
+  }
 
   console.log('Finished editing expenses');
 
@@ -99,12 +93,10 @@ async function editExpenses() {
 }
 
 async function deleteExpenses() {
-  await Promise.all(
-    dummyData.expensesToDelete.map(async ({ idx, deletedBy }) => {
-      assert(idLookup.get(idx), `No expense ID found for index ${idx}`);
-      await deleteExpense(idLookup.get(idx)!, deletedBy.id);
-    }),
-  );
+  for (const { idx, deletedBy } of dummyData.expensesToDelete) {
+    assert(idLookup.get(idx), `No expense ID found for index ${idx}`);
+    await deleteExpense(idLookup.get(idx)!, deletedBy.id);
+  }
 
   console.log('Finished deleting expenses');
 

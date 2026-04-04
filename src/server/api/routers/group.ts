@@ -165,8 +165,20 @@ export const groupRouter = createTRPCRouter({
   addMembers: groupProcedure
     .input(z.object({ userIds: z.array(z.number()) }))
     .mutation(async ({ input, ctx }) => {
+      const existingMembers = await ctx.db.groupUser.findMany({
+        where: { groupId: input.groupId, userId: { in: input.userIds } },
+        select: { userId: true },
+      });
+
+      const existingIds = new Set(existingMembers.map((m) => m.userId));
+      const newUserIds = input.userIds.filter((id) => !existingIds.has(id));
+
+      if (newUserIds.length === 0) {
+        return { count: 0 };
+      }
+
       const groupUsers = await ctx.db.groupUser.createMany({
-        data: input.userIds.map((userId) => ({
+        data: newUserIds.map((userId) => ({
           groupId: input.groupId,
           userId,
         })),

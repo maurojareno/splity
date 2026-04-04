@@ -269,6 +269,7 @@
     "quick_add_charge": "Agregar gasto rápido",
     "charge_description_placeholder": "¿En qué se gastó?",
     "charge_added": "Gasto agregado",
+    "charge_to_envelope": "Cargo a hucha",
     "charge_deleted": "Gasto eliminado",
     "charge_history": "Historial de gastos",
     "no_charges_yet": "Sin gastos aún",

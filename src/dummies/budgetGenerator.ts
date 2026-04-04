@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import type { DummyGroupInfo } from './groupGenerator';
 import { CURRENCY_MULTIPLIERS, type DummyCurrencyCode } from './userGenerator';
 
-const BUDGET_COUNT = 30;
+const BUDGET_COUNT = 1;
 
 const envelopeTemplates = [
   { icon: '\u{1F3E0}', name: 'Rent', pct: 0.35 },

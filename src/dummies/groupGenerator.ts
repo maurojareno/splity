@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import type { DummyCurrencyCode, DummyUserInfo } from './userGenerator';
 
-const GROUP_COUNT = 150;
+const GROUP_COUNT = 2;
 
 export type DummyGroupType = 'trip' | 'job' | 'household' | 'friends';
 

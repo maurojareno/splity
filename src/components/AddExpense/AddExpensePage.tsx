@@ -74,6 +74,7 @@ export const AddOrEditExpensePage: React.FC<{
 
   const [selectedEnvelopeId, setSelectedEnvelopeId] = useState<string | null>(null);
 
+  const utils = api.useUtils();
   const addExpenseMutation = api.expense.addOrEditExpense.useMutation();
   const envelopeChargeMutation = api.envelope.charge.useMutation();
   const updateProfile = api.user.updateUserDetail.useMutation();
@@ -104,6 +105,44 @@ export const AddOrEditExpensePage: React.FC<{
   );
 
   const addExpense = useCallback(async () => {
+    // Envelope-only charge: skip expense creation entirely
+    if (selectedEnvelopeId) {
+      if (!amount || amount <= 0n || !description) {
+        return;
+      }
+
+      try {
+        await envelopeChargeMutation.mutateAsync({
+          envelopeId: selectedEnvelopeId,
+          amount,
+          description,
+          date: expenseDate,
+        });
+
+        toast.success(t('budget.charge_added'));
+
+        if (group?.id) {
+          utils.budget.getActive.invalidate({ groupId: group.id }).catch(console.error);
+        }
+
+        const groupId = (router.query.groupId as string) ?? String(group?.id ?? '');
+        if (groupId) {
+          await router.push(`/groups/${groupId}/budget/envelope/${selectedEnvelopeId}`);
+        } else {
+          router.back();
+        }
+        resetState();
+      } catch (error) {
+        console.error(error);
+        if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error('An unexpected error occurred.');
+        }
+      }
+      return;
+    }
+
     if (!paidBy) {
       return;
     }
@@ -143,22 +182,7 @@ export const AddOrEditExpensePage: React.FC<{
         {
           onSuccess: async (d) => {
             if (d) {
-              // Create envelope charge if an envelope is selected
               const newExpenseId = d.length > 0 ? d[0]?.id : expenseId;
-              if (selectedEnvelopeId && newExpenseId && amount > 0n) {
-                try {
-                  await envelopeChargeMutation.mutateAsync({
-                    envelopeId: selectedEnvelopeId,
-                    amount: amount * (isNegative ? -1n : 1n),
-                    description,
-                    expenseId: newExpenseId,
-                  });
-                } catch (e) {
-                  // Don't block navigation if charge fails
-                  console.error('Failed to create envelope charge:', e);
-                }
-                setSelectedEnvelopeId(null);
-              }
 
               if (multipleTransactions.length > 0) {
                 const allTransactions = [...multipleTransactions];
@@ -229,6 +253,8 @@ export const AddOrEditExpensePage: React.FC<{
     cronExpression,
     multipleTransactions,
     setSingleTransaction,
+    utils,
+    t,
   ]);
 
   const handleDescriptionChange = useCallback(
@@ -307,7 +333,11 @@ export const AddOrEditExpensePage: React.FC<{
           variant="ghost"
           className="text-primary px-0"
           disabled={
-            addExpenseMutation.isPending || !amount || '' === description || isFileUploading
+            addExpenseMutation.isPending ||
+            envelopeChargeMutation.isPending ||
+            !amount ||
+            '' === description ||
+            isFileUploading
           }
           onClick={addExpense}
         >
@@ -351,26 +381,32 @@ export const AddOrEditExpensePage: React.FC<{
           <div className="h-[180px]">
             {amount && '' !== description ? (
               <>
-                <div className="flex flex-col items-center justify-center text-sm text-gray-400 sm:mt-4 sm:flex-row">
-                  <p>{t(`ui.expense.${isNegative ? 'received_by' : 'paid_by'}`)}</p>
-                  <PayerSelectionForm>
-                    <Button variant="ghost" className="text-primary h-8 px-1.5 py-0 text-base">
-                      {displayName(paidBy, currentUser?.id, 'dativus')}
-                    </Button>
-                  </PayerSelectionForm>
-                  <p>{t('ui.and')} </p>
-                  <SplitExpenseForm>
-                    <Button variant="ghost" className="text-primary h-8 px-1.5 py-0 text-base">
-                      {generateSplitDescription(
-                        splitType,
-                        participants,
-                        splitShares,
-                        paidBy,
-                        currentUser,
-                      )}
-                    </Button>
-                  </SplitExpenseForm>
-                </div>
+                {selectedEnvelopeId ? (
+                  <div className="flex flex-col items-center justify-center text-sm text-gray-400 sm:mt-4">
+                    <p>{t('budget.charge_to_envelope')}</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-sm text-gray-400 sm:mt-4 sm:flex-row">
+                    <p>{t(`ui.expense.${isNegative ? 'received_by' : 'paid_by'}`)}</p>
+                    <PayerSelectionForm>
+                      <Button variant="ghost" className="text-primary h-8 px-1.5 py-0 text-base">
+                        {displayName(paidBy, currentUser?.id, 'dativus')}
+                      </Button>
+                    </PayerSelectionForm>
+                    <p>{t('ui.and')} </p>
+                    <SplitExpenseForm>
+                      <Button variant="ghost" className="text-primary h-8 px-1.5 py-0 text-base">
+                        {generateSplitDescription(
+                          splitType,
+                          participants,
+                          splitShares,
+                          paidBy,
+                          currentUser,
+                        )}
+                      </Button>
+                    </SplitExpenseForm>
+                  </div>
+                )}
 
                 <div className="mt-4 flex items-start justify-between sm:mt-10">
                   <DateSelector
@@ -380,17 +416,22 @@ export const AddOrEditExpensePage: React.FC<{
                     onSelect={setExpenseDate}
                   />
                   <div className="flex items-center gap-4">
-                    <UploadFile />
+                    {!selectedEnvelopeId && <UploadFile />}
                     <Button
                       className="min-w-[100px]"
                       size="sm"
-                      loading={addExpenseMutation.isPending || isFileUploading}
+                      loading={
+                        addExpenseMutation.isPending ||
+                        envelopeChargeMutation.isPending ||
+                        isFileUploading
+                      }
                       disabled={
                         addExpenseMutation.isPending ||
+                        envelopeChargeMutation.isPending ||
                         !amount ||
                         '' === description ||
                         isFileUploading ||
-                        !isExpenseSettled
+                        (!selectedEnvelopeId && !isExpenseSettled)
                       }
                       onClick={addExpense}
                     >
@@ -402,7 +443,7 @@ export const AddOrEditExpensePage: React.FC<{
             ) : null}
           </div>
           <div className="flex items-center justify-evenly px-4 lg:px-0">
-            {!expenseId && (
+            {!expenseId && !selectedEnvelopeId && (
               <RecurrenceInput>
                 <Button variant="ghost" size="sm">
                   <RefreshCcwDot
