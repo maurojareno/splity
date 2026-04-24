@@ -20,6 +20,7 @@ const config = {
     ],
     localeDetection: false,
   },
+  fallbackLng: 'en',
   localePath: './public/locales',
 };
 

@@ -34,6 +34,9 @@ const nextConfig = {
       },
     ],
   },
+  outputFileTracingIncludes: {
+    '/*': ['./public/locales/**/*'],
+  },
 };
 
 const withSerwist = withSerwistInit({

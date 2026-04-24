@@ -1,3 +1,4 @@
+import path from 'path';
 import { type SSRConfig } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import i18nConfig from '@/next-i18next.config.js';
@@ -9,7 +10,10 @@ export const customServerSideTranslations = async (
   if (!locale || locale === 'default') {
     locale = 'en';
   }
-  return await serverSideTranslations(locale, namespaces, i18nConfig);
+  return await serverSideTranslations(locale, namespaces, {
+    ...i18nConfig,
+    localePath: path.resolve('./public/locales'),
+  });
 };
 
 export const withI18nStaticProps =
