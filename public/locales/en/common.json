@@ -279,6 +279,18 @@
     "budget_created": "Budget created",
     "budget_updated": "Budget updated",
     "no_envelope": "No envelope",
+    "budget_history": "Budget history",
+    "active": "Active",
+    "archived": "Archived",
+    "restore_budget": "Restore",
+    "budget_archived": "Budget archived",
+    "budget_restored": "Budget restored",
+    "viewing_archived": "You are viewing an archived budget.",
+    "view_current": "View current",
+    "view_past_budgets": "View past budgets",
+    "no_budgets_found": "No budgets found",
+    "cannot_deactivate_only": "Cannot deactivate the only active budget. Activate another first.",
+    "envelopes_count": "{{count}} envelopes",
     "empty_state": {
       "title": "No budget yet",
       "description": "Create a budget to track spending with envelopes. Allocate amounts to categories and see how your group spending compares."

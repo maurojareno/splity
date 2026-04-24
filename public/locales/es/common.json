@@ -279,6 +279,18 @@
     "budget_created": "Presupuesto creado",
     "budget_updated": "Presupuesto actualizado",
     "no_envelope": "Sin hucha",
+    "budget_history": "Historial de presupuestos",
+    "active": "Activo",
+    "archived": "Archivado",
+    "restore_budget": "Restaurar",
+    "budget_archived": "Presupuesto archivado",
+    "budget_restored": "Presupuesto restaurado",
+    "viewing_archived": "Estás viendo un presupuesto archivado.",
+    "view_current": "Ver actual",
+    "view_past_budgets": "Ver presupuestos anteriores",
+    "no_budgets_found": "No se encontraron presupuestos",
+    "cannot_deactivate_only": "No podés desactivar el único presupuesto activo. Activá otro primero.",
+    "envelopes_count": "{{count}} huchas",
     "empty_state": {
       "title": "Sin presupuesto aún",
       "description": "Creá un presupuesto para controlar los gastos con huchas. Asigná montos a categorías y mirá cómo gasta tu grupo."
