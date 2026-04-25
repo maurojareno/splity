@@ -411,5 +411,39 @@
     "show_all_currencies": "",
     "today": "Vandaag",
     "total_balance": ""
+  },
+  "budget": {
+    "start_from": "Begin vanaf...",
+    "copy_previous": "Vorig budget kopiëren",
+    "use_template": "Gebruik een sjabloon",
+    "or_start_scratch": "of begin vanaf nul",
+    "select_budget_to_copy": "Selecteer een te kopiëren budget",
+    "duplicate": "Dupliceren",
+    "templates": {
+      "personal": {
+        "name": "Persoonlijk",
+        "description": "Basis persoonlijk budget"
+      },
+      "family": {
+        "name": "Familie",
+        "description": "Familiehuishoudbudget"
+      },
+      "student": {
+        "name": "Student",
+        "description": "Eenvoudig studentenbudget"
+      },
+      "envelopes": {
+        "rent": "Huur",
+        "groceries": "Boodschappen",
+        "transport": "Vervoer",
+        "utilities": "Nutsvoorzieningen",
+        "entertainment": "Entertainment",
+        "savings": "Spaargeld",
+        "health": "Gezondheid",
+        "kids": "Kinderen",
+        "education": "Onderwijs",
+        "pets": "Huisdieren"
+      }
+    }
   }
 }

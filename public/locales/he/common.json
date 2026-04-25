@@ -411,5 +411,39 @@
     "show_all_currencies": "",
     "today": "",
     "total_balance": ""
+  },
+  "budget": {
+    "start_from": "התחל מ...",
+    "copy_previous": "העתק תקציב קודם",
+    "use_template": "השתמש בתבנית",
+    "or_start_scratch": "או התחל מאפס",
+    "select_budget_to_copy": "בחר תקציב להעתקה",
+    "duplicate": "שכפל",
+    "templates": {
+      "personal": {
+        "name": "אישי",
+        "description": "תקציב אישי בסיסי"
+      },
+      "family": {
+        "name": "משפחה",
+        "description": "תקציב משק בית משפחתי"
+      },
+      "student": {
+        "name": "סטודנט",
+        "description": "תקציב סטודנט פשוט"
+      },
+      "envelopes": {
+        "rent": "שכירות",
+        "groceries": "קניות",
+        "transport": "תחבורה",
+        "utilities": "חשבונות",
+        "entertainment": "בידור",
+        "savings": "חסכונות",
+        "health": "בריאות",
+        "kids": "ילדים",
+        "education": "חינוך",
+        "pets": "חיות מחמד"
+      }
+    }
   }
 }

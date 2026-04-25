@@ -412,5 +412,39 @@
     "show_all_currencies": "Zobraziť všetky meny",
     "today": "Dnes",
     "total_balance": "Celkový zostatok"
+  },
+  "budget": {
+    "start_from": "Začať od...",
+    "copy_previous": "Skopírovať predchádzajúci rozpočet",
+    "use_template": "Použiť šablónu",
+    "or_start_scratch": "alebo začať od začiatku",
+    "select_budget_to_copy": "Vyberte rozpočet na skopírovanie",
+    "duplicate": "Duplikovať",
+    "templates": {
+      "personal": {
+        "name": "Osobný",
+        "description": "Základný osobný rozpočet"
+      },
+      "family": {
+        "name": "Rodinný",
+        "description": "Rodinný domáci rozpočet"
+      },
+      "student": {
+        "name": "Študent",
+        "description": "Jednoduchý študentský rozpočet"
+      },
+      "envelopes": {
+        "rent": "Nájom",
+        "groceries": "Potraviny",
+        "transport": "Doprava",
+        "utilities": "Energie",
+        "entertainment": "Zábava",
+        "savings": "Úspory",
+        "health": "Zdravie",
+        "kids": "Deti",
+        "education": "Vzdelanie",
+        "pets": "Domáce zvieratá"
+      }
+    }
   }
 }

@@ -294,6 +294,38 @@
     "empty_state": {
       "title": "No budget yet",
       "description": "Create a budget to track spending with envelopes. Allocate amounts to categories and see how your group spending compares."
+    },
+    "start_from": "Start from...",
+    "copy_previous": "Copy previous budget",
+    "use_template": "Use a template",
+    "or_start_scratch": "or start from scratch",
+    "select_budget_to_copy": "Select a budget to copy",
+    "duplicate": "Duplicate",
+    "templates": {
+      "personal": {
+        "name": "Personal",
+        "description": "Basic personal budget"
+      },
+      "family": {
+        "name": "Family",
+        "description": "Family household budget"
+      },
+      "student": {
+        "name": "Student",
+        "description": "Simple student budget"
+      },
+      "envelopes": {
+        "rent": "Rent",
+        "groceries": "Groceries",
+        "transport": "Transport",
+        "utilities": "Utilities",
+        "entertainment": "Entertainment",
+        "savings": "Savings",
+        "health": "Health",
+        "kids": "Kids",
+        "education": "Education",
+        "pets": "Pets"
+      }
     }
   },
   "group_details": {

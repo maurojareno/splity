@@ -412,5 +412,39 @@
     "show_all_currencies": "Visa alla valutor",
     "today": "Idag",
     "total_balance": "Totalt saldo"
+  },
+  "budget": {
+    "start_from": "Börja från...",
+    "copy_previous": "Kopiera föregående budget",
+    "use_template": "Använd en mall",
+    "or_start_scratch": "eller börja från grunden",
+    "select_budget_to_copy": "Välj en budget att kopiera",
+    "duplicate": "Duplicera",
+    "templates": {
+      "personal": {
+        "name": "Personlig",
+        "description": "Grundläggande personlig budget"
+      },
+      "family": {
+        "name": "Familj",
+        "description": "Familjens hushållsbudget"
+      },
+      "student": {
+        "name": "Student",
+        "description": "Enkel studentbudget"
+      },
+      "envelopes": {
+        "rent": "Hyra",
+        "groceries": "Matvaror",
+        "transport": "Transport",
+        "utilities": "Räkningar",
+        "entertainment": "Nöjen",
+        "savings": "Besparingar",
+        "health": "Hälsa",
+        "kids": "Barn",
+        "education": "Utbildning",
+        "pets": "Husdjur"
+      }
+    }
   }
 }

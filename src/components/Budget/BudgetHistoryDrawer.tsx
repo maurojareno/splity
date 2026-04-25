@@ -68,6 +68,9 @@ export const BudgetHistoryDrawer: React.FC<BudgetHistoryDrawerProps> = ({ groupI
             getCurrencyHelpersCached={getCurrencyHelpersCached}
             t={t}
             isCurrentlyViewing={!router.query.id}
+            onDuplicate={() =>
+              void router.push(`/groups/${groupId}/budget/new?copyFrom=${activeBudget.id}`)
+            }
           />
         )}
 
@@ -87,6 +90,9 @@ export const BudgetHistoryDrawer: React.FC<BudgetHistoryDrawerProps> = ({ groupI
                   toggleActive.isPending && toggleActive.variables?.budgetId === budget.id
                 }
                 isCurrentlyViewing={router.query.id === budget.id}
+                onDuplicate={() =>
+                  void router.push(`/groups/${groupId}/budget/new?copyFrom=${budget.id}`)
+                }
               />
             ))}
           </>
@@ -111,6 +117,7 @@ interface BudgetHistoryItemProps {
   onNavigate: (id: string, isActive: boolean) => void;
   onRestore?: () => void;
   isRestoring?: boolean;
+  onDuplicate?: () => void;
   isCurrentlyViewing: boolean;
   toUIDate: (date: Date) => string;
   getCurrencyHelpersCached: (currency: string) => { toUIString: (amount: bigint) => string };
@@ -122,6 +129,7 @@ const BudgetHistoryItem: React.FC<BudgetHistoryItemProps> = ({
   onNavigate,
   onRestore,
   isRestoring,
+  onDuplicate,
   isCurrentlyViewing,
   toUIDate,
   getCurrencyHelpersCached,
@@ -164,11 +172,18 @@ const BudgetHistoryItem: React.FC<BudgetHistoryItemProps> = ({
         </div>
       </button>
 
-      {onRestore && (
-        <div className="mt-2 flex justify-end">
-          <Button size="sm" variant="outline" onClick={onRestore} disabled={isRestoring}>
-            {t('budget.restore_budget')}
-          </Button>
+      {(onRestore ?? onDuplicate) && (
+        <div className="mt-2 flex justify-end gap-2">
+          {onRestore && (
+            <Button size="sm" variant="outline" onClick={onRestore} disabled={isRestoring}>
+              {t('budget.restore_budget')}
+            </Button>
+          )}
+          {onDuplicate && (
+            <Button size="sm" variant="outline" onClick={onDuplicate}>
+              {t('budget.duplicate')}
+            </Button>
+          )}
         </div>
       )}
     </div>

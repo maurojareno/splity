@@ -412,5 +412,39 @@
     "show_all_currencies": "Összes pénznem megjelenítése",
     "today": "Ma",
     "total_balance": "Összes egyenleg"
+  },
+  "budget": {
+    "start_from": "Kezdés innen...",
+    "copy_previous": "Előző költségvetés másolása",
+    "use_template": "Sablon használata",
+    "or_start_scratch": "vagy kezdés nulláról",
+    "select_budget_to_copy": "Válasszon másolandó költségvetést",
+    "duplicate": "Duplikálás",
+    "templates": {
+      "personal": {
+        "name": "Személyes",
+        "description": "Alap személyes költségvetés"
+      },
+      "family": {
+        "name": "Családi",
+        "description": "Családi háztartási költségvetés"
+      },
+      "student": {
+        "name": "Diák",
+        "description": "Egyszerű diák költségvetés"
+      },
+      "envelopes": {
+        "rent": "Lakbér",
+        "groceries": "Élelmiszer",
+        "transport": "Közlekedés",
+        "utilities": "Rezsi",
+        "entertainment": "Szórakozás",
+        "savings": "Megtakarítás",
+        "health": "Egészség",
+        "kids": "Gyerekek",
+        "education": "Oktatás",
+        "pets": "Háziállatok"
+      }
+    }
   }
 }

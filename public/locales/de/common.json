@@ -415,5 +415,39 @@
     "show_all_currencies": "Alle Währungen anzeigen",
     "today": "Heute",
     "total_balance": "Gesamtguthaben"
+  },
+  "budget": {
+    "start_from": "Starten von...",
+    "copy_previous": "Vorheriges Budget kopieren",
+    "use_template": "Vorlage verwenden",
+    "or_start_scratch": "oder von Grund auf beginnen",
+    "select_budget_to_copy": "Budget zum Kopieren auswählen",
+    "duplicate": "Duplizieren",
+    "templates": {
+      "personal": {
+        "name": "Persönlich",
+        "description": "Einfaches persönliches Budget"
+      },
+      "family": {
+        "name": "Familie",
+        "description": "Familiäres Haushaltsbudget"
+      },
+      "student": {
+        "name": "Student",
+        "description": "Einfaches Studentenbudget"
+      },
+      "envelopes": {
+        "rent": "Miete",
+        "groceries": "Lebensmittel",
+        "transport": "Transport",
+        "utilities": "Nebenkosten",
+        "entertainment": "Unterhaltung",
+        "savings": "Ersparnisse",
+        "health": "Gesundheit",
+        "kids": "Kinder",
+        "education": "Bildung",
+        "pets": "Haustiere"
+      }
+    }
   }
 }

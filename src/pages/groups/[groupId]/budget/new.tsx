@@ -1,4 +1,4 @@
-import { ChevronLeft, PlusIcon, Trash2 } from 'lucide-react';
+import { ChevronLeft, Copy, LayoutTemplate, PlusIcon, Trash2 } from 'lucide-react';
 import { type GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -12,8 +12,11 @@ import { Input } from '~/components/ui/input';
 import { type CurrencyCode } from '~/lib/currency';
 import { useTranslationWithUtils } from '~/hooks/useTranslationWithUtils';
 import { type NextPageWithUser } from '~/types';
-import { api } from '~/utils/api';
+import { type RouterOutputs, api } from '~/utils/api';
 import { customServerSideTranslations } from '~/utils/i18n/server';
+import { BudgetCopyDrawer } from '~/components/Budget/BudgetCopyDrawer';
+import { BudgetTemplateDrawer } from '~/components/Budget/BudgetTemplateDrawer';
+import { type BudgetTemplate } from '~/lib/budget-templates';
 
 interface EnvelopeFormData {
   name: string;
@@ -39,12 +42,14 @@ const NewBudgetPage: NextPageWithUser = () => {
   const router = useRouter();
   const groupId = parseInt(router.query.groupId as string);
   const editId = router.query.edit as string | undefined;
+  const copyFromId = router.query.copyFrom as string | undefined;
 
   const groupDetailQuery = api.group.getGroupDetails.useQuery({ groupId });
   const editBudgetQuery = api.budget.getActive.useQuery({ groupId }, { enabled: Boolean(editId) });
 
   const createBudgetMutation = api.budget.create.useMutation();
   const updateBudgetMutation = api.budget.update.useMutation();
+  const utils = api.useUtils();
 
   const defaultCurrency = groupDetailQuery.data?.defaultCurrency ?? 'EUR';
 
@@ -65,6 +70,7 @@ const NewBudgetPage: NextPageWithUser = () => {
   const [envelopes, setEnvelopes] = useState<EnvelopeFormData[]>([
     { name: '', allocatedAmountStr: '', allocatedAmount: 0n, icon: '\u{1F3E0}', color: '' },
   ]);
+  const [sourceSelected, setSourceSelected] = useState(Boolean(copyFromId));
 
   // Populate form when editing
   React.useEffect(() => {
@@ -93,6 +99,30 @@ const NewBudgetPage: NextPageWithUser = () => {
       setCurrency(groupDetailQuery.data.defaultCurrency);
     }
   }, [groupDetailQuery.data?.defaultCurrency]);
+
+  React.useEffect(() => {
+    if (!copyFromId || editId) {return;}
+    utils.budget.getById
+      .fetch({ groupId, budgetId: copyFromId })
+      .then((budget) => {
+        const helpers = getCurrencyHelpersCached(budget.currency);
+        setTotalAmount(budget.totalAmount);
+        setTotalAmountStr(helpers.toUIString(budget.totalAmount, false, true));
+        setCurrency(budget.currency);
+        setEnvelopes(
+          budget.envelopes.map((e) => ({
+            name: e.name,
+            allocatedAmountStr: helpers.toUIString(e.allocatedAmount, false, true),
+            allocatedAmount: e.allocatedAmount,
+            icon: e.icon ?? '',
+            color: e.color ?? '',
+          })),
+        );
+        setSourceSelected(true);
+      })
+      .catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [copyFromId]);
 
   const envelopeSum = envelopes.reduce((sum, e) => sum + e.allocatedAmount, 0n);
   const unallocated = totalAmount - envelopeSum;
@@ -175,6 +205,50 @@ const NewBudgetPage: NextPageWithUser = () => {
     setPeriodEnd(new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0]!);
   }, []);
 
+  const applyCopiedBudget = useCallback(
+    (budget: RouterOutputs['budget']['getById']) => {
+      const helpers = getCurrencyHelpersCached(budget.currency);
+      setTotalAmount(budget.totalAmount);
+      setTotalAmountStr(helpers.toUIString(budget.totalAmount, false, true));
+      setCurrency(budget.currency);
+      setEnvelopes(
+        budget.envelopes.map((e) => ({
+          name: e.name,
+          allocatedAmountStr: helpers.toUIString(e.allocatedAmount, false, true),
+          allocatedAmount: e.allocatedAmount,
+          icon: e.icon ?? '',
+          color: e.color ?? '',
+        })),
+      );
+    },
+    [getCurrencyHelpersCached],
+  );
+
+  const applyTemplate = useCallback(
+    (template: BudgetTemplate) => {
+      setEnvelopes(
+        template.envelopes.map((e) => ({
+          name: t(e.nameKey),
+          allocatedAmountStr: '',
+          allocatedAmount: 0n,
+          icon: e.icon,
+          color: '',
+        })),
+      );
+      setSourceSelected(true);
+    },
+    [t],
+  );
+
+  const handleCopySelect = useCallback(
+    async (budgetId: string) => {
+      const budget = await utils.budget.getById.fetch({ groupId, budgetId });
+      applyCopiedBudget(budget);
+      setSourceSelected(true);
+    },
+    [groupId, utils, applyCopiedBudget],
+  );
+
   return (
     <>
       <Head>
@@ -248,76 +322,111 @@ const NewBudgetPage: NextPageWithUser = () => {
 
           {!editId && (
             <>
-              <div className="mt-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <label className="text-sm font-medium">{t('budget.envelopes')}</label>
-                  {totalAmount > 0n && (
-                    <span
-                      className={`text-sm ${isOverAllocated ? 'text-red-500' : 'text-gray-400'}`}
-                    >
-                      {t('budget.unallocated')}: {currencyHelpers.toUIString(unallocated)}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  {envelopes.map((envelope, index) => (
-                    <div key={index} className="flex items-start gap-2 rounded-lg border p-3">
-                      <div className="flex flex-wrap items-center gap-1">
-                        {ENVELOPE_PRESETS.map((preset) => (
-                          <button
-                            key={preset.icon}
-                            type="button"
-                            onClick={() => updateEnvelope(index, 'icon', preset.icon)}
-                            className={`rounded p-1 text-lg ${
-                              envelope.icon === preset.icon
-                                ? 'bg-primary/20 ring-primary ring-1'
-                                : 'hover:bg-gray-800'
-                            }`}
-                          >
-                            {preset.icon}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="flex flex-1 flex-col gap-2">
-                        <Input
-                          placeholder={t('budget.envelope_name_placeholder')}
-                          value={envelope.name}
-                          onChange={(e) => updateEnvelope(index, 'name', e.target.value)}
-                        />
-                        <CurrencyInput
-                          placeholder={t('budget.allocated_amount')}
-                          currency={currency}
-                          strValue={envelope.allocatedAmountStr}
-                          onValueChange={({ strValue, bigIntValue }) => {
-                            if (strValue !== undefined) {
-                              updateEnvelope(index, 'allocatedAmountStr', strValue);
-                            }
-                            if (bigIntValue !== undefined) {
-                              updateEnvelope(index, 'allocatedAmount', bigIntValue);
-                            }
-                          }}
-                        />
-                      </div>
-                      {envelopes.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="mt-1 text-red-500 hover:text-red-400"
-                          onClick={() => removeEnvelope(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
+              {!sourceSelected && (
+                <div className="rounded-lg border border-dashed p-4 text-center">
+                  <p className="mb-3 text-sm font-medium">{t('budget.start_from')}</p>
+                  <div className="flex justify-center gap-2">
+                    <BudgetCopyDrawer
+                      groupId={groupId}
+                      trigger={
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <Copy className="h-4 w-4" />
+                          {t('budget.copy_previous')}
                         </Button>
-                      )}
-                    </div>
-                  ))}
+                      }
+                      onSelect={(id) => void handleCopySelect(id)}
+                    />
+                    <BudgetTemplateDrawer
+                      trigger={
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <LayoutTemplate className="h-4 w-4" />
+                          {t('budget.use_template')}
+                        </Button>
+                      }
+                      onSelect={applyTemplate}
+                    />
+                  </div>
+                  <button
+                    className="text-muted-foreground mt-3 text-xs underline underline-offset-2"
+                    onClick={() => setSourceSelected(true)}
+                  >
+                    {t('budget.or_start_scratch')}
+                  </button>
                 </div>
+              )}
 
-                <Button variant="outline" className="mt-3 w-full gap-2" onClick={addEnvelope}>
-                  <PlusIcon className="h-4 w-4" />
-                  {t('budget.add_envelope')}
-                </Button>
-              </div>
+              {sourceSelected && (
+                <div className="mt-4">
+                  <div className="mb-2 flex items-center justify-between">
+                    <label className="text-sm font-medium">{t('budget.envelopes')}</label>
+                    {totalAmount > 0n && (
+                      <span
+                        className={`text-sm ${isOverAllocated ? 'text-red-500' : 'text-gray-400'}`}
+                      >
+                        {t('budget.unallocated')}: {currencyHelpers.toUIString(unallocated)}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    {envelopes.map((envelope, index) => (
+                      <div key={index} className="flex items-start gap-2 rounded-lg border p-3">
+                        <div className="flex flex-wrap items-center gap-1">
+                          {ENVELOPE_PRESETS.map((preset) => (
+                            <button
+                              key={preset.icon}
+                              type="button"
+                              onClick={() => updateEnvelope(index, 'icon', preset.icon)}
+                              className={`rounded p-1 text-lg ${
+                                envelope.icon === preset.icon
+                                  ? 'bg-primary/20 ring-primary ring-1'
+                                  : 'hover:bg-gray-800'
+                              }`}
+                            >
+                              {preset.icon}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex flex-1 flex-col gap-2">
+                          <Input
+                            placeholder={t('budget.envelope_name_placeholder')}
+                            value={envelope.name}
+                            onChange={(e) => updateEnvelope(index, 'name', e.target.value)}
+                          />
+                          <CurrencyInput
+                            placeholder={t('budget.allocated_amount')}
+                            currency={currency}
+                            strValue={envelope.allocatedAmountStr}
+                            onValueChange={({ strValue, bigIntValue }) => {
+                              if (strValue !== undefined) {
+                                updateEnvelope(index, 'allocatedAmountStr', strValue);
+                              }
+                              if (bigIntValue !== undefined) {
+                                updateEnvelope(index, 'allocatedAmount', bigIntValue);
+                              }
+                            }}
+                          />
+                        </div>
+                        {envelopes.length > 1 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="mt-1 text-red-500 hover:text-red-400"
+                            onClick={() => removeEnvelope(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button variant="outline" className="mt-3 w-full gap-2" onClick={addEnvelope}>
+                    <PlusIcon className="h-4 w-4" />
+                    {t('budget.add_envelope')}
+                  </Button>
+                </div>
+              )}
             </>
           )}
 

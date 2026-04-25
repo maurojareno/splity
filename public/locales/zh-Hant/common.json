@@ -411,5 +411,39 @@
     "show_all_currencies": "",
     "today": "",
     "total_balance": ""
+  },
+  "budget": {
+    "start_from": "從...開始",
+    "copy_previous": "複製上一個預算",
+    "use_template": "使用模板",
+    "or_start_scratch": "或從頭開始",
+    "select_budget_to_copy": "選擇要複製的預算",
+    "duplicate": "複製",
+    "templates": {
+      "personal": {
+        "name": "個人",
+        "description": "基本個人預算"
+      },
+      "family": {
+        "name": "家庭",
+        "description": "家庭生活預算"
+      },
+      "student": {
+        "name": "學生",
+        "description": "簡單學生預算"
+      },
+      "envelopes": {
+        "rent": "租金",
+        "groceries": "食材",
+        "transport": "交通",
+        "utilities": "水電",
+        "entertainment": "娛樂",
+        "savings": "儲蓄",
+        "health": "健康",
+        "kids": "子女",
+        "education": "教育",
+        "pets": "寵物"
+      }
+    }
   }
 }

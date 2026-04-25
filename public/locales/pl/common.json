@@ -424,5 +424,39 @@
     "show_all_currencies": "",
     "today": "Dzisiaj",
     "total_balance": ""
+  },
+  "budget": {
+    "start_from": "Zacznij od...",
+    "copy_previous": "Skopiuj poprzedni budżet",
+    "use_template": "Użyj szablonu",
+    "or_start_scratch": "lub zacznij od zera",
+    "select_budget_to_copy": "Wybierz budżet do skopiowania",
+    "duplicate": "Duplikuj",
+    "templates": {
+      "personal": {
+        "name": "Osobisty",
+        "description": "Podstawowy budżet osobisty"
+      },
+      "family": {
+        "name": "Rodzina",
+        "description": "Rodzinny budżet domowy"
+      },
+      "student": {
+        "name": "Student",
+        "description": "Prosty budżet studencki"
+      },
+      "envelopes": {
+        "rent": "Czynsz",
+        "groceries": "Zakupy spożywcze",
+        "transport": "Transport",
+        "utilities": "Rachunki",
+        "entertainment": "Rozrywka",
+        "savings": "Oszczędności",
+        "health": "Zdrowie",
+        "kids": "Dzieci",
+        "education": "Edukacja",
+        "pets": "Zwierzęta"
+      }
+    }
   }
 }

@@ -417,5 +417,39 @@
     "show_all_currencies": "Mostra tutte le valute",
     "today": "Oggi",
     "total_balance": "Saldo totale"
+  },
+  "budget": {
+    "start_from": "Inizia da...",
+    "copy_previous": "Copia budget precedente",
+    "use_template": "Usa un modello",
+    "or_start_scratch": "o inizia da zero",
+    "select_budget_to_copy": "Seleziona un budget da copiare",
+    "duplicate": "Duplica",
+    "templates": {
+      "personal": {
+        "name": "Personale",
+        "description": "Budget personale di base"
+      },
+      "family": {
+        "name": "Famiglia",
+        "description": "Budget familiare domestico"
+      },
+      "student": {
+        "name": "Studente",
+        "description": "Budget studentesco semplice"
+      },
+      "envelopes": {
+        "rent": "Affitto",
+        "groceries": "Spesa",
+        "transport": "Trasporti",
+        "utilities": "Bollette",
+        "entertainment": "Intrattenimento",
+        "savings": "Risparmi",
+        "health": "Salute",
+        "kids": "Bambini",
+        "education": "Istruzione",
+        "pets": "Animali"
+      }
+    }
   }
 }

@@ -13,5 +13,39 @@
       "download_as_pwa": "SplitProをPWAとしてホーム画面に追加できます.",
       "title": "アプリをダウンロード"
     }
+  },
+  "budget": {
+    "start_from": "ここから始める...",
+    "copy_previous": "前回の予算をコピー",
+    "use_template": "テンプレートを使用",
+    "or_start_scratch": "またはゼロから始める",
+    "select_budget_to_copy": "コピーする予算を選択",
+    "duplicate": "複製",
+    "templates": {
+      "personal": {
+        "name": "個人",
+        "description": "基本的な個人予算"
+      },
+      "family": {
+        "name": "家族",
+        "description": "家族の家計予算"
+      },
+      "student": {
+        "name": "学生",
+        "description": "シンプルな学生予算"
+      },
+      "envelopes": {
+        "rent": "家賃",
+        "groceries": "食料品",
+        "transport": "交通費",
+        "utilities": "光熱費",
+        "entertainment": "娯楽",
+        "savings": "貯蓄",
+        "health": "健康",
+        "kids": "子ども",
+        "education": "教育",
+        "pets": "ペット"
+      }
+    }
   }
 }

@@ -7,5 +7,39 @@
       },
       "placeholder": "Zgjidhni gjuhën"
     }
+  },
+  "budget": {
+    "start_from": "Fillo nga...",
+    "copy_previous": "Kopjo buxhetin e mëparshëm",
+    "use_template": "Përdor një model",
+    "or_start_scratch": "ose fillo nga e para",
+    "select_budget_to_copy": "Zgjidh një buxhet për të kopjuar",
+    "duplicate": "Dupliko",
+    "templates": {
+      "personal": {
+        "name": "Personal",
+        "description": "Buxhet personal bazë"
+      },
+      "family": {
+        "name": "Familje",
+        "description": "Buxhet familjar shtëpiak"
+      },
+      "student": {
+        "name": "Student",
+        "description": "Buxhet i thjeshtë studentor"
+      },
+      "envelopes": {
+        "rent": "Qira",
+        "groceries": "Ushqime",
+        "transport": "Transport",
+        "utilities": "Shërbime",
+        "entertainment": "Argëtim",
+        "savings": "Kursime",
+        "health": "Shëndet",
+        "kids": "Fëmijë",
+        "education": "Arsim",
+        "pets": "Kafshë shtëpiake"
+      }
+    }
   }
 }

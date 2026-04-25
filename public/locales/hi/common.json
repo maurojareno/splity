@@ -411,5 +411,39 @@
     "show_all_currencies": "",
     "today": "",
     "total_balance": ""
+  },
+  "budget": {
+    "start_from": "यहाँ से शुरू करें...",
+    "copy_previous": "पिछला बजट कॉपी करें",
+    "use_template": "टेम्पलेट का उपयोग करें",
+    "or_start_scratch": "या शुरू से शुरू करें",
+    "select_budget_to_copy": "कॉपी करने के लिए बजट चुनें",
+    "duplicate": "डुप्लिकेट",
+    "templates": {
+      "personal": {
+        "name": "व्यक्तिगत",
+        "description": "बुनियादी व्यक्तिगत बजट"
+      },
+      "family": {
+        "name": "परिवार",
+        "description": "पारिवारिक घरेलू बजट"
+      },
+      "student": {
+        "name": "छात्र",
+        "description": "सरल छात्र बजट"
+      },
+      "envelopes": {
+        "rent": "किराया",
+        "groceries": "किराना",
+        "transport": "परिवहन",
+        "utilities": "उपयोगिताएँ",
+        "entertainment": "मनोरंजन",
+        "savings": "बचत",
+        "health": "स्वास्थ्य",
+        "kids": "बच्चे",
+        "education": "शिक्षा",
+        "pets": "पालतू जानवर"
+      }
+    }
   }
 }
